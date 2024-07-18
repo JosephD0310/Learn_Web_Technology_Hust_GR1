@@ -8,7 +8,6 @@ const cx = classNames.bind(styles);
 function Navbar() {
     return (
         <div className="container mx-auto h-20 flex items-center justify-between">
-            <div className="font-black text-4xl text-blue-600">EBAI</div>
             <div>
                 <ul className="flex flex-row gap-10 font-bold">
                     <li>

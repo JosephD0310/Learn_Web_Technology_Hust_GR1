@@ -7,6 +7,10 @@ const UserSchema = new Schema(
     password: String,
   },
   {
+    timestamps: {
+      createdAt: 'create_at',
+      updatedAt: 'update_at'
+    },
     collection: 'users',
   },
 );
