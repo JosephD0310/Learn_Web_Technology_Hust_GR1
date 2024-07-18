@@ -8,13 +8,13 @@
 
 ## About the project
 
-This repository contains the backend & frontend code for the **Learn web technology** project. The project aims to This project aims to practice the web technologies learned for graduate studies module 1.
+This repository contains the backend & frontend code for the ***Learn web technology*** project. The project aims to This project aims to practice the web technologies learned for graduate studies module 1.
 
 ### Technologies Used
 
-- **NestJS** for backend 
-- **MongoDB** for database
-- **React + Typescripts** for frontend
+- ***NestJS*** for backend 
+- ***MongoDB*** for database
+- ***React + Typescripts*** for frontend
 
 ### Feature
 

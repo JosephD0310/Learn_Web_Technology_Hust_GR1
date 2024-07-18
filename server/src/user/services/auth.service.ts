@@ -15,7 +15,7 @@ export class AuthService {
 
   async register(userDto: CreateUserDto) {
     const user = await this.userService.create(userDto);
-    const token = await this._createToken(user);
+    const token = this._createToken(user);
     return {
       email: user.email,
       ...token,
@@ -24,7 +24,7 @@ export class AuthService {
 
   async login(loginUserDto: LoginUserDto) {
     const user = await this.userService.findByLogin(loginUserDto);
-    const token = await this._createToken(user);
+    const token = this._createToken(user);
 
     return {
       email: user.email,
@@ -32,23 +32,7 @@ export class AuthService {
     };
   }
 
-  async handleVerifyToken(token: string) {
-    try {
-      const payload = this.jwtService.verify(token); // this.configService.get('SECRETKEY')
-      return payload['email'];
-    } catch (e) {
-      throw new HttpException(
-        {
-          key: '',
-          data: {},
-          statusCode: HttpStatus.UNAUTHORIZED,
-        },
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
-  }
-
-  async validateUser(email: any) {
+  async validateUser(email) {
     const user = await this.userService.findByEmail(email);
     if (!user) {
       throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
@@ -56,70 +40,11 @@ export class AuthService {
     return user;
   }
 
-  async getAccess2FA(user: { email: any; }) {
-    return this._createToken(user, true);
-  }
-
-  private async _createToken(
-    { email },
-    isSecondFactorAuthenticated = false,
-    refresh = true,
-  ) {
-    const accessToken = this.jwtService.sign({
-      email,
-      isSecondFactorAuthenticated,
-    });
-    if (refresh) {
-      const refreshToken = this.jwtService.sign(
-        { email },
-        {
-          secret: process.env.SECRETKEY_REFRESH,
-          expiresIn: process.env.EXPIRESIN_REFRESH,
-        },
-      );
-      await this.userService.update(
-        { email: email },
-        {
-          refreshToken: refreshToken,
-        },
-      );
-      return {
-        expiresIn: process.env.EXPIRESIN,
-        accessToken,
-        refreshToken,
-        expiresInRefresh: process.env.EXPIRESIN_REFRESH,
-      };
-    } else {
-      return {
-        expiresIn: process.env.EXPIRESIN,
-        accessToken,
-      };
-    }
-  }
-
-  async refresh(refresh_token: string) {
-    try {
-      const payload = await this.jwtService.verify(refresh_token, {
-        secret: process.env.SECRETKEY_REFRESH,
-      });
-      const user = await this.userService.getUserByRefresh(
-        refresh_token,
-        payload.email,
-      );
-      const token = await this._createToken(user, true, false);
-      return {
-        email: user.email,
-        ...token,
-      };
-    } catch (e) {
-      throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
-    }
-  }
-
-  async logout(user: User) {
-    await this.userService.update(
-      { email: user.email },
-      { refreshToken: null },
-    );
+  private _createToken({ email }): any {
+    const accessToken = this.jwtService.sign({ email });
+    return {
+      expiresIn: process.env.EXPIRESIN,
+      accessToken,
+    };
   }
 }

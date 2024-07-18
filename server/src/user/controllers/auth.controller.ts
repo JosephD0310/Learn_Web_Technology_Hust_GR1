@@ -16,18 +16,4 @@ export class AuthController {
   async login(@Body() loginUserDto: LoginUserDto) {
     return await this.authService.login(loginUserDto);
   }
-
-  @Post('refresh')
-  async refresh(@Body() body) {
-    return await this.authService.refresh(body.refresh_token);
-  }
-
-  @UseGuards(AuthGuard())
-  @Post('logout')
-  async logout(@Req() req: any) {
-    await this.authService.logout(req.user);
-    return {
-      statusCode: 200,
-    };
-  }
 }
