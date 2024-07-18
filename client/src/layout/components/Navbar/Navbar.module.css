@@ -1,0 +1,22 @@
+.nav-item {
+    position: relative;
+}
+
+.nav-item::after {
+    content: '';
+    width: 0;
+    height: 2px;
+    border-radius: 20px;
+    background: #1E88E5;
+    position: absolute;
+    bottom: -5px;
+    transition: width 0.3s ease-in-out;
+}
+
+.nav-item.active {
+    color: #1E88E5;
+}
+
+.nav-item.active::after {
+    width: 100%;
+}
