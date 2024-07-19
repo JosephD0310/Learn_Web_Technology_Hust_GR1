@@ -1,6 +1,8 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { publicRoutes } from './routes';
 import { Fragment } from 'react/jsx-runtime';
+import { ReactNode, useContext } from 'react';
+import { AuthContext } from './services/context/AuthContext';
 
 function App() {
 
