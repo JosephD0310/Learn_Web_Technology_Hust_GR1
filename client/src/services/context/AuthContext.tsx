@@ -1,24 +1,31 @@
 import { createContext, useReducer, ReactNode, Dispatch, useEffect } from 'react';
 
 export interface User {
-    name: string;
     email: string;
-    password: string;
+    expiresIn: number;
+    accessToken: string;
 }
 
 interface State {
     user: User | null;
     loading: boolean;
-    error: {msg : string} | null;
+    error: { status: number; message: string } | null;
 }
 
 interface Action {
-    type: 'LOGIN_START' | 'LOGIN_SUCCESS' | 'LOGIN_FAILURE' | 'LOGOUT';
+    type:
+        | 'LOGIN_START'
+        | 'LOGIN_SUCCESS'
+        | 'LOGIN_FAILURE'
+        | 'LOGOUT'
+        | 'REGISTER_START'
+        | 'REGISTER_SUCCESS'
+        | 'REGISTER_FAILURE';
     payload?: any;
 }
 
 const INITIAL_STATE: State = {
-    user: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')!) : null,
+    user: JSON.parse(localStorage.getItem('user') as string) || null,
     loading: false,
     error: null,
 };
@@ -26,7 +33,7 @@ const INITIAL_STATE: State = {
 export const AuthContext = createContext<{
     user: User | null;
     loading: boolean;
-    error: {msg : string} | null;
+    error: { status: number; message: string } | null;
     dispatch: Dispatch<Action>;
 }>({
     ...INITIAL_STATE,
@@ -45,7 +52,7 @@ function AuthReducer(state: State, action: Action): State {
             };
         case 'LOGIN_SUCCESS':
             return {
-                user: action.payload?.user ?? null,
+                user: action.payload,
                 loading: false,
                 error: null,
             };
@@ -60,6 +67,25 @@ function AuthReducer(state: State, action: Action): State {
                 user: null,
                 loading: false,
                 error: null,
+            };
+        case 'REGISTER_START':
+            return {
+                user: null,
+                loading: true,
+                error: null,
+            };
+        case 'REGISTER_SUCCESS':
+            localStorage.setItem('user', JSON.stringify(action.payload));
+            return {
+                user: action.payload?.user ?? null,
+                loading: false,
+                error: null,
+            };
+        case 'REGISTER_FAILURE':
+            return {
+                user: null,
+                loading: false,
+                error: action.payload,
             };
         default:
             return state;
