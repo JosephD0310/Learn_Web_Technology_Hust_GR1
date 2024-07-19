@@ -9,22 +9,26 @@ import axios from 'axios';
 const cx = classNames.bind(styles);
 
 function Login() {
-
     const navigate = useNavigate();
 
     const [credentials, setCredentials] = useState({
-        email: undefined,
-        password: undefined,
+        email: '',
+        password: '',
     });
 
-    const { error, dispatch } = useContext(AuthContext);
+    const {error, dispatch } = useContext(AuthContext);
 
-    const handleChange = (e:any) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setCredentials((prev) => ({ ...prev, [e.target.id]: e.target.value }));
-    }
+    };
 
-    const handleClick = async (e: any) => {
+    const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
+        if (!credentials.email || !credentials.password) {
+            dispatch({ type: 'LOGIN_FAILURE', payload: {message: 'Please fill in all fields'}});
+            return;
+        }
+
         dispatch({ type: 'LOGIN_START' });
         try {
             const res = await axios.post('https://learn-web-technology-hust-gr1.onrender.com/auth/login', credentials);
@@ -32,10 +36,8 @@ function Login() {
             navigate('/');
         } catch (err: any) {
             dispatch({ type: 'LOGIN_FAILURE', payload: err.response.data });
-            console.log(err.response.data)
+            console.log(err.response.data);
         }
-
-        console.log(error?.msg)
     };
 
     return (
@@ -59,9 +61,25 @@ function Login() {
                 </div>
                 <div className="text-6xl">Sign in</div>
                 <div>Sign in and start managing your candidates!</div>
-                <form action="" className="flex flex-col w-1/4 gap-10">
-                    <input className={cx('input')} type="text" placeholder="Email" id='email' onChange={handleChange} />
-                    <input className={cx('input')} type="password" placeholder="Password" id='password' onChange={handleChange}/>
+                <form className="flex flex-col w-1/4 gap-10">
+                    <input
+                        required
+                        className={cx('input')}
+                        type="text"
+                        placeholder="Email"
+                        id="email"
+                        value={credentials.email}
+                        onChange={handleChange}
+                    />
+                    <input
+                        required
+                        className={cx('input')}
+                        type="password"
+                        placeholder="Password"
+                        id="password"
+                        value={credentials.password}
+                        onChange={handleChange}
+                    />
                     <div className="flex flex-row items-center justify-between">
                         <div className="flex flex-row items-center gap-2">
                             <input className="p-5" type="checkbox" id="rememberMe" />
@@ -69,12 +87,16 @@ function Login() {
                         </div>
                         <div className="text-green-500">Forgot password?</div>
                     </div>
-                    <button className={cx('button')} onClick={handleClick}>Login</button>
-                    {error && <span>{error.msg}</span>}
+                    <button className={cx('button')} onClick={handleClick}>
+                        Login
+                    </button>
                 </form>
                 <div className="flex flex-row gap-5">
-                    <Link to={config.routes.register}><span style={{textDecoration: "underline"}}>Đăng ký tài khoản mới</span></Link>
+                    <Link to={config.routes.register}>
+                        <span style={{ textDecoration: 'underline' }}>Đăng ký tài khoản mới</span>
+                    </Link>
                 </div>
+                {error && <span className="flex justify-center text-orange-500">{error.message} !!!</span>}
             </div>
         </div>
     );

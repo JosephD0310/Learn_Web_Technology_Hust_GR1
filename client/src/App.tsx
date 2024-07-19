@@ -3,6 +3,8 @@ import { publicRoutes } from './routes';
 import { Fragment } from 'react/jsx-runtime';
 
 function App() {
+
+
     return (
         <Router>
             <>
@@ -15,9 +17,9 @@ function App() {
                                 key={index}
                                 path={route.path}
                                 element={
-                                    <Layout>
-                                        <Page />
-                                    </Layout>
+                                        <Layout>
+                                            <Page />
+                                        </Layout>
                                 }
                             />
                         );

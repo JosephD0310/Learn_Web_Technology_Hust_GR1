@@ -22,7 +22,10 @@ This repository contains the backend & frontend code for the ***Learn web techno
 
 ### Deployed With
 
-- [![Render][render]][render-url]
+- ![Render](https://img.shields.io/badge/Render.com-0099ff?style=for-the-badge&logo=render&logoColor=white)
+- ![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
+
+
 
 <!-- GETTING STARTED -->
 
@@ -70,7 +73,7 @@ npm run dev
 
 ### ScreenShots
 
-![alt](http://~)
+![Login page](https://i.imgur.com/Zw9h5K2.jpeg)
 
 ## Contributing
 

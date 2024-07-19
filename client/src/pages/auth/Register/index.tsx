@@ -1,13 +1,47 @@
 import classNames from 'classnames/bind';
 import styles from './Register.module.sass';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import config from '../../../config';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import { AuthContext } from '../../../services/context/AuthContext';
+import axios from 'axios';
 
 const cx = classNames.bind(styles);
 
 function Register() {
-    
+    const navigate = useNavigate();
+
+    const [credentials, setCredentials] = useState({
+        name: undefined,
+        email: undefined,
+        password: undefined,
+    });
+
+    const { error, dispatch } = useContext(AuthContext);
+
+    const handleChange = (e: any) => {
+        setCredentials((prev) => ({ ...prev, [e.target.id]: e.target.value }));
+    };
+
+    const handleClick = async (e: any) => {
+        e.preventDefault();
+        dispatch({ type: 'REGISTER_START' });
+        try {
+            console.log(credentials);
+            const res = await axios.post(
+                'https://learn-web-technology-hust-gr1.onrender.com/auth/register',
+                credentials,
+            );
+            dispatch({ type: 'REGISTER_SUCCESS', payload: res.data });
+            navigate('/login');
+        } catch (err: any) {
+            dispatch({ type: 'REGISTER_FAILURE', payload: err.response.data });
+            console.log(err.response.data);
+        }
+
+        console.log(error?.message);
+    };
+
     return (
         <div className="bg-cover bg-center h-screen w-full" style={{ backgroundImage: 'url(/bg.png)' }}>
             <div className="container mx-auto flex flex-row items-center justify-between py-10">
@@ -30,13 +64,38 @@ function Register() {
                 <div className="text-6xl">Sign up</div>
                 <div>Sign up and start managing your candidates!</div>
                 <form action="" className="flex flex-col w-1/4 gap-10">
-                    <input className={cx('input')} type="text" placeholder="Name" />
-                    <input className={cx('input')} type="text" placeholder="Email" />
-                    <input className={cx('input')} type="password" placeholder="Password" />
-                    <button className={cx('button')}>Sign up</button>
+                    <input
+                        className={cx('input')}
+                        id="name"
+                        type="text"
+                        placeholder="Name"
+                        onChange={handleChange}
+                        required
+                    />
+                    <input
+                        className={cx('input')}
+                        id="email"
+                        type="text"
+                        placeholder="Email"
+                        onChange={handleChange}
+                        required
+                    />
+                    <input
+                        className={cx('input')}
+                        id='password'
+                        type="password"
+                        placeholder="Password"
+                        onChange={handleChange}
+                        required
+                    />
+                    <button className={cx('button')} onClick={handleClick}>
+                        Sign up
+                    </button>
                 </form>
                 <div className="flex flex-row gap-5">
-                    <Link to={config.routes.login}><span style={{textDecoration: "underline"}}>Đăng nhập với tài khoản đã có</span></Link>
+                    <Link to={config.routes.login}>
+                        <span style={{ textDecoration: 'underline' }}>Đăng nhập với tài khoản đã có</span>
+                    </Link>
                 </div>
             </div>
         </div>
