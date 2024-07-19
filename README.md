@@ -69,7 +69,7 @@ npm run dev
 
 ## Usage
 
-[Live Demo](https://github.com/JosephD0310/Learn_Web_Technology_Hust_GR1.git)
+[Live Demo](https://hust-gr1.vercel.app/login)
 
 ### ScreenShots
 
